@@ -1,9 +1,44 @@
+Các config :
+
+docker run -u 0 -d -p 8080:8080 -p 50000:50000 -v /data/jenkins:/var/jenkins_home jenkins/jenkins:lts
+>FROM — chỉ định image gốc: python, unbutu, alpine…
+LABEL — cung cấp metadata cho image. Có thể sử dụng để add thông tin maintainer. Để xem các label của images, dùng lệnh docker inspect.
+ENV — thiết lập một biến môi trường.
+RUN — Có thể tạo một lệnh khi build image. Được sử dụng để cài đặt các package vào container.
+COPY — Sao chép các file và thư mục vào container.
+ADD — Sao chép các file và thư mục vào container.
+CMD — Cung cấp một lệnh và đối số cho container thực thi. Các tham số có thể được ghi đè và chỉ có một CMD.
+WORKDIR — Thiết lập thư mục đang làm việc cho các chỉ thị khác như: RUN, CMD, ENTRYPOINT, COPY, ADD,…
+ARG — Định nghĩa giá trị biến được dùng trong lúc build image.
+ENTRYPOINT — cung cấp lệnh và đối số cho một container thực thi.
+EXPOSE — khai báo port lắng nghe của image.
+VOLUME — tạo một điểm gắn thư mục để truy cập và lưu trữ data.
 # Docker
 
 >docker ps
+>docker ps -a
 
 Dùng để liệt kê ra các container đang chạy. Khi sử dụng với các tham số
 -a/-all: Liệt kê tất cả các container, kể cả đang chạy hay đã kể thúc -q/-quiet: chỉ liệt kê ra id của các container.
+
+>docker stop container_id
+>docker rm container_id
+
+Xóa container
+
+>docker images
+
+Dùng lệnh docker images để liệt kê tất cả images có sẵn trên máy tính chạy docker của bạn.
+
+>docker search docker_image_name
+
+Tìm kiếm docker trên máy của bạn
+>docker rmi docker_image_name
+
+Xóa docker images
+>docker build -t image_name .
+
+Build docker image
 
 >docker pull
 
