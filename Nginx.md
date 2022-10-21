@@ -1,4 +1,4 @@
-##Các lệnh thường dùng trên môi trường linux với nginx
+## Các lệnh thường dùng trên môi trường linux với nginx
 ```
 sudo systemctl stop nginx
 sudo systemctl restart nginx
@@ -69,7 +69,7 @@ CGroup: /system.slice/nginx.service
 ├─2369 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
 └─2380 nginx: worker process
 ```
-##Triển khai nhiều web trên cùng 1 host
+## Triển khai nhiều web trên cùng 1 host
 ```
 sudo mkdir -p /var/www/domain_one.com/html
 sudo mkdir -p /var/www/domain_two.com/html
@@ -182,7 +182,7 @@ Triggers: ● certbot.service
 sudo certbot renew --dry-run
 ```
 
-Chú ý:
+## Chú ý:
 Sử dụng nginx ( 172.255.255.50 ) để trỏ đến 1 app trong host (172.255.255.50) có port 30080 ta tham khảo đoạn cấu hình sau
 ```
 upstream mandala-backoffice {
