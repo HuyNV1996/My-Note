@@ -1,5 +1,5 @@
 ## Các lệnh thường dùng trên môi trường linux với nginx
-```
+```sh
 sudo systemctl stop nginx
 sudo systemctl restart nginx
 sudo systemctl start nginx
@@ -37,7 +37,7 @@ Nginx HTTPS
 OpenSSH
 Open http port
 ```
-```
+```sh
 sudo ufw allow 'Nginx HTTP'
 
 sudo ufw status
@@ -70,7 +70,7 @@ CGroup: /system.slice/nginx.service
 └─2380 nginx: worker process
 ```
 ## Triển khai nhiều web trên cùng 1 host
-```
+```sh
 sudo mkdir -p /var/www/domain_one.com/html
 sudo mkdir -p /var/www/domain_two.com/html
 
@@ -86,7 +86,7 @@ sudo nano /var/www/domain_one.com/html/index.html
 sudo nano /var/www/domain_two.com/html/index.html
 ```
 Ví dụ file index.html:
-```
+```html
 <html>
 <head>
 <title>Welcome to domain one!</title>
@@ -97,12 +97,12 @@ Ví dụ file index.html:
 </html>
 ```
 ## Install
-```
+```sh
 sudo nano /etc/nginx/sites-available/domain_one
 sudo nano /etc/nginx/sites-available/domain_two
 ```
 Tham khảo file domain_one.conf
-```
+```nginx
 server {
 listen 80;
 listen [::]:80;
@@ -118,7 +118,7 @@ try_files $uri $uri/ =404;
 }
 ```
 Tham khảo file domain_two.conf
-```
+```nginx
 server {
 listen 80;
 listen [::]:80;
@@ -134,27 +134,31 @@ try_files $uri $uri/ =404;
 }
 ```
 Copy từ sites-available sang sites-enabled. Chú ý do trong nginx.conf không include sites-available nên phải copy sang *.conf.d hoặc sites-enabled
-```
+```sh
 sudo ln -s /etc/nginx/sites-available/domain_one.com /etc/nginx/sites-enabled/
 sudo ln -s /etc/nginx/sites-available/domain_two.com /etc/nginx/sites-enabled/
 ```
 Hoặc có thể tạo file .conf trực tiếp trong sites-enabled
-```
+```sh
 sudo nano /etc/nginx/nginx.conf
 ```
 To avoid a possible hash bucket memory problem that can arise from adding additional server names, it is necessary to adjust a single value in the /etc/nginx/nginx.conf file
 Tìm đến server_names_hash_bucket_size
 Và uncomment (xóa bỏ # đằng trước )
 Sau đó check cú pháp file nginx.conf và apply cấu hình
-```
+```sh
 nginx -t
+```
 Restart lại nginx
+```sh
 sudo systemctl restart nginx
 ```
 Cài SSL dùng Cerbot
-```
+```sh
 sudo apt install certbot python3-certbot-nginx
+```
 Apply Cerbot vào domain
+```sh
 sudo certbot --nginx -d example.com -d www.example.com
 ```
 Kết quả
@@ -178,13 +182,13 @@ Active: active (waiting) since Mon 2020-05-04 20:04:36 UTC; 2 weeks 1 days ago
 Trigger: Thu 2020-05-21 05:22:32 UTC; 9h left
 Triggers: ● certbot.service
 ```
-```
+```sh
 sudo certbot renew --dry-run
 ```
 
 ## Chú ý:
 Sử dụng nginx ( 172.255.255.50 ) để trỏ đến 1 app trong host (172.255.255.50) có port 30080 ta tham khảo đoạn cấu hình sau
-```
+```nginx
 upstream mandala-backoffice {
 ip_hash;
 server 172.255.255.50:30080;
@@ -208,7 +212,7 @@ location / {
 }
 ```
 Nếu nginx(172.155.155.50) trỏ đến app nằm trên host khác (10.0.0.183 ) và port 9000 ta tham khảo cấu hình sau:
-```
+```nginx
 server {
     server_name cdn.mandalaholiday.com;
     client_max_body_size 1000M;
@@ -232,7 +236,7 @@ server {
 }
 ```
 Với dự án dùng `PHP` tham khảo
-```
+```nginx
 server {
     listen 80; 
     listen [::]:80;
@@ -262,3 +266,8 @@ server {
     }
 }
 ```
+## Tài liệu
+[How to Configure Nginx to serve Multiple Websites on a Single VPS](https://webdock.io/en/docs/how-guides/shared-hosting-multiple-websites/how-configure-nginx-to-serve-multiple-websites-single-vps)
+[NGINX - Host multiple domains on one server](https://www.learnbestcoding.com/post/15/hosting-multiple-websites-with-nginx)
+[How To Install Nginx on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04)
+[How To Secure Nginx with Let's Encrypt on Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04)
