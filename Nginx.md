@@ -192,6 +192,7 @@ Sử dụng nginx ( 172.255.255.50 ) để trỏ đến 1 app trong host (172.25
 upstream mandala-backoffice {
 ip_hash;
 server 172.255.255.50:30080;
+#server localhost:30080;
 }
 
 server {
