@@ -1,4 +1,17 @@
 ## Các lệnh thường dùng trên môi trường linux với nginx
+Kill port 80 in use
+```
+sudo lsof -t -i tcp:80 -s tcp:listen | sudo xargs kill
+```
+Liệt kê port 80
+```
+sudo lsof -i -P -n | grep LISTEN
+```
+```
+Xóa toàn bộ nginx
+sudo apt-get remove nginx nginx-common
+sudo apt-get purge nginx nginx-common
+```
 ```sh
 sudo systemctl stop nginx
 sudo systemctl restart nginx
