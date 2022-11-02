@@ -74,3 +74,10 @@ Kết quả:
 ```
 Docker Compose version v2.10.2
 ```
+Chế độ interactive
+```
+sudo docker exec -it [containerID] bin/bash
+```
+```
+sudo docker exec -u 0 -it ContainerID bin/bash
+```
