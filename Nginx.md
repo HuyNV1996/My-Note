@@ -280,6 +280,15 @@ server {
     }
 }
 ```
+## Tự động gia hạn ssl
+Sử dụng CronbTab để chạy lệnh này cấp mới chứng chỉ. Ví dụ, cứ 2h sáng vào ngày 1 hàng tháng thì chạy, ta tạo crontab như sau:
+```
+crontab -e
+```
+Sau đó nhập vào
+```
+0 2 1 * *  /usr/bin/certbot renew  >/dev/null 2>&1
+```
 ## Tài liệu
 [How to Configure Nginx to serve Multiple Websites on a Single VPS](https://webdock.io/en/docs/how-guides/shared-hosting-multiple-websites/how-configure-nginx-to-serve-multiple-websites-single-vps)
 

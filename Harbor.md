@@ -68,4 +68,4 @@ Kết quả
 >✔ ----Harbor has been installed and started successfully.----
 
 # Chú ý:
-Để xác thực SSL cho domain của harbo. Trước tiên cài nginx trên máy => Tạo project demo đơn giản (Ví dụ hiển thị text html lên màn hình) trỏ domain cần xác thực đến => Chạy lệnh gen ssl => sửa file cấu hình harbor.yaml => tắt nginx => chạy ./prepare và ./insall. Chú ý khi xác thực ssl cần tắc các container tránh việc trùng port 80 giữa nginx ( chạy trực tiếp trên máy) và nginx chạy trên docker.
+Để xác thực SSL cho domain của harbo. Trước tiên cài nginx trên máy => Tạo project demo đơn giản (Ví dụ hiển thị text html lên màn hình) trỏ domain cần xác thực đến => Chạy lệnh gen ssl => sửa file cấu hình harbor.yaml => tắt nginx => chạy ./prepare và ./insall. Chú ý khi xác thực ssl cần tắt các container tránh việc trùng port 80 giữa nginx ( chạy trực tiếp trên máy) và nginx chạy trên docker.

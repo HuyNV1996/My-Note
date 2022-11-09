@@ -75,3 +75,12 @@ USER jenkins
 sudo chown -R jenkins:jenkins /tmp/NuGetScratch/
 ```
 => Tránh lỗi error : Unable to obtain lock file access on
+
+#### Update package nudget cho docker trong jenkins
+```
+cd ~/.nuget/packages
+```
+copy package:
+```
+cp -R tms.flexcel.webforms ~/.nuget/packages
+```
