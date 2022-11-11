@@ -109,3 +109,162 @@ Lấy file config k8s
  cd .kube
  cat config
  ```
+
+ Jenkinsfile với Aspnetcore
+ ```jenkinsfile
+     //  Gitlab
+	def gitRepository = 'https://gitlab.com/HuyNV1996/holiday-booking-aspnet.git'
+	def gitBranch = 'main'
+	def gitlabCredential = 'holiday-booking-aspnet'
+
+    // Harbor
+	def imageGroup = 'holiday-booking'
+	def appName = "admin"
+	def namespace = "booking-aspnet-core"	
+	def registryCredential = 'jenkin_harbor'
+	def VERSION  = "prod-0.${BUILD_NUMBER}"
+	
+	pipeline {
+		agent any
+		environment {
+			DOCKER_REGISTRY = 'https://reg.mandalaholiday.tk'
+			DOCKER_IMAGE_NAME = "${imageGroup}/${appName}"
+			DOCKER_IMAGE = "reg.mandalaholiday.tk/${DOCKER_IMAGE_NAME}"
+	    }		
+		stages {
+		    stage("Verify tooling"){
+    		    steps {
+    		        sh'''
+    		        docker info
+    		        curl --version
+    		        '''
+    		    }
+		    }
+			stage('Git Checkout') 
+			{
+			  steps 
+			  {
+			    checkout(
+			        [$class: 'GitSCM',
+			        branches: [[name: '*/main']],
+			        extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: false, timeout: 120]],
+			        userRemoteConfigs: [[credentialsId: gitlabCredential, url: gitRepository]]])
+				    sh "git reset --hard"				
+			  }
+			}
+			stage('Build and Push Images')
+            {
+                steps 
+    			{
+                     script{
+				        sh '''#!/bin/bash
+				        dotnet restore "./MandalaBooking.sln"
+                        dotnet publish /nr:false "./module-admin/HttpApi.Host/MandalaBooking.Admin.HttpApi.Host.csproj" -c Release -o ./module-admin/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-danh-muc/HttpApi.Host/MandalaBooking.DanhMuc.HttpApi.Host.csproj" -c Release -o ./module-danh-muc/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-import-export/HttpApi.Host/MandalaBooking.ImportExport.HttpApi.Host.csproj" -c Release -o ./module-import-export/HttpApi.Host/published
+                        
+                        cp -R ./module-admin/OrdFull.HttpApi.Host/Resources ./module-admin/HttpApi.Host/published
+                        
+                        docker rmi reg.mandalaholiday.tk/holiday-booking/admin -f
+                        docker rmi reg.mandalaholiday.tk/holiday-booking/danhmuc -f
+                        docker rmi reg.mandalaholiday.tk/holiday-booking/im-export -f
+				        '''
+				        admin = docker.build('reg.mandalaholiday.tk/holiday-booking/admin', './module-admin/HttpApi.Host')
+						docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
+						    admin.push()
+						}
+						
+						danhmuc = docker.build('reg.mandalaholiday.tk/holiday-booking/danhmuc', './module-danh-muc/HttpApi.Host')
+						docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
+						    danhmuc.push()
+                        }
+                        
+                        import_export = docker.build('reg.mandalaholiday.tk/holiday-booking/im-export', './module-import-export/HttpApi.Host')
+						docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
+						    import_export.push()
+                        }
+                    }
+                   
+                }
+		    }
+		  //  stage('Clear Folder'){
+		  //      steps 
+    // 			{
+    //                  script{
+    //         		        sh '''
+    //         		        chmod -R 777 ./module-admin/HttpApi.Host/published
+    //         		        chmod -R 777 ./module-danh-muc/HttpApi.Host/published
+    //         		        chmod -R 777 ./module-import-export/HttpApi.Host/published
+    //         		        rm -f -R ./module-admin/HttpApi.Host/published
+    //         		        rm -f -R ./module-danh-muc/HttpApi.Host/published
+    //         		        rm -f -R ./module-import-export/HttpApi.Host/published
+    //         		        '''
+    //                  }
+    // 			}
+		  //  }
+		}
+	}
+ ```
+ Jenkinsfile với Angular
+ ```
+ //  Gitlab
+	def gitRepository = 'https://gitlab.com/HuyNV1996/holiday-booking-angular.git'
+	def gitBranch = 'main'
+	def gitlabCredential = 'holiday-booking-angular'
+
+    // Harbor
+	def imageGroup = 'holiday-booking'
+	def appName = "angular"
+	def namespace = "booking-angular"	
+	def registryCredential = 'jenkin_harbor'
+	def VERSION  = "prod-0.${BUILD_NUMBER}"
+	
+	pipeline {
+		agent any
+		environment {
+			DOCKER_REGISTRY = 'https://reg.mandalaholiday.tk'
+			DOCKER_IMAGE_NAME = "${imageGroup}/${appName}"
+			DOCKER_IMAGE = "reg.mandalaholiday.tk/${DOCKER_IMAGE_NAME}"
+	    }		
+		stages {
+			stage('Git Checkout') 
+			{
+			  steps 
+			  {
+			    checkout(
+			        [$class: 'GitSCM',
+			        branches: [[name: '*/main']],
+			        extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: false, timeout: 120]],
+			        userRemoteConfigs: [[credentialsId: gitlabCredential, url: gitRepository]]])
+				    sh "git reset --hard"				
+			  }
+			}
+			stage("Build and Push Images"){
+    		    steps {
+    		        script{
+				        sh '''#!/bin/bash
+        		        cd ./ClientApp
+        		        yarn
+        		        yarn run build:prod
+        		        node --max_old_space_size=12000 ./node_modules/@angular/cli/bin/ng build --configuration production
+        		        docker rmi reg.mandalaholiday.tk/holiday-booking/angular -f
+        		        '''
+        		        angular = docker.build('reg.mandalaholiday.tk/holiday-booking/angular', './ClientApp')
+    					docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
+    						    angular.push()
+    					}
+        		    }
+    		    }
+		    }
+		    stage('Deploy to K8s')
+            {
+               steps{
+                    script{
+                        
+                        kubernetesDeploy (configs: './home/admins/booking-k8s/mandala-hotel-angular-deployment.yaml',kubeconfigId: 'jenkins_k8s_uat')
+                    }
+                }
+            }
+		}
+	}
+ ```
