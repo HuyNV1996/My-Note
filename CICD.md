@@ -84,3 +84,28 @@ copy package:
 ```
 cp -R tms.flexcel.webforms ~/.nuget/packages
 ```
+```
+ kubectl create secret docker-registry regcred --docker-server=reg.mandalaholiday.tk --docker-username=k8s --docker-password=Apec@123 --docker-email=huybka1996@gmail.com
+ ```
+ ```
+ kubectl get secret regcred --output=yaml
+ ```
+ output:
+
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJyZWcubWFuZGFsYWhvbGlkYXkudGsiOnsidXNlcm5hbWUiOiJrOHMiLCJwYXNzd29yZCI6IkFwZWNAMTIzIiwiZW1haWwiOiJodXlia2ExOTk2QGdtYWlsLmNvbSIsImF1dGgiOiJhemh6T2tGd1pXTkFNVEl6In19fQ==
+kind: Secret
+metadata:
+  creationTimestamp: "2022-11-09T16:12:30Z"
+  name: regcred
+  namespace: default
+  resourceVersion: "6660"
+  uid: b76f6aa8-2b9d-4713-9fbe-2a030a119b4d
+
+
+Lấy file config k8s
+```
+ cd .kube
+ cat config
+ ```

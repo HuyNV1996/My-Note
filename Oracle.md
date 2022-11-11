@@ -1,4 +1,39 @@
-Bật/tắt Oracle
+### Lỗi sqlplus not fount
+```
+su - oracle
+```
+```
+source oraenv
+```
+(Enter SID)
+
+```
+sqlplus / as sysdba
+```
+### Thay đổi user sys
+```
+alter user sys identified by <yourpassword>;
+ALTER USER  IDENTIFIED BY new_password;
+```
+### Tạo user mới
+```
+create user user_name identified by admin_password;
+```
+### Assign quyền sysdba
+```
+grant sysdba to user_name;
+grant create session to user_name;
+```
+```
+alter session set "_ORACLE_SCRIPT"=true;
+```
+### Kết nối với sql developer
+Kiểm tra lsnrctl
+```
+lsnrctl status
+```
+
+### Bật/tắt Oracle
 
 ```
 sqlplus / as sysdba

@@ -56,3 +56,13 @@ Sau khi giải nén có file INSTALL
 make
 sudo make install hoặc sudo make install
 ```
+
+Kiểm tra port đang listen
+```
+netstat -tunlp
+```
+```
+sudo rm -rf /var/lib/apt/lists/*
+sudo rm -rf /etc/apt/sources.list.d/*
+sudo apt-get update
+```

@@ -81,3 +81,7 @@ sudo docker exec -it [containerID] bin/bash
 ```
 sudo docker exec -u 0 -it ContainerID bin/bash
 ```
+Nếu bị lỗi E: Method https has died unexpectedly! sử bổ sung GNUTLS_CPUID_OVERRIDE=0x1 vào trước
+```
+sudo GNUTLS_CPUID_OVERRIDE=0x1 apt-get update
+```
