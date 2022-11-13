@@ -111,16 +111,16 @@ Lấy file config k8s
  ```
 
  Jenkinsfile với Aspnetcore
- ```jenkinsfile
-     //  Gitlab
-	def gitRepository = 'https://gitlab.com/HuyNV1996/holiday-booking-aspnet.git'
+ ```
+    //  Gitlab
+	def gitRepository = 'https://gitlab.com/HuyNV1996/holiday-backoffice-aspnetcore.git'
 	def gitBranch = 'main'
-	def gitlabCredential = 'holiday-booking-aspnet'
+	def gitlabCredential = 'holiday-backoffice-aspnet'
 
     // Harbor
-	def imageGroup = 'holiday-booking'
+	def imageGroup = 'holiday-backoffice'
 	def appName = "admin"
-	def namespace = "booking-aspnet-core"	
+	def namespace = "backoffice-aspnet-core"	
 	def registryCredential = 'jenkin_harbor'
 	def VERSION  = "prod-0.${BUILD_NUMBER}"
 	
@@ -152,70 +152,98 @@ Lấy file config k8s
 				    sh "git reset --hard"				
 			  }
 			}
-			stage('Build and Push Images')
+			stage('Build Docker Images')
             {
                 steps 
     			{
                      script{
 				        sh '''#!/bin/bash
-				        dotnet restore "./MandalaBooking.sln"
-                        dotnet publish /nr:false "./module-admin/HttpApi.Host/MandalaBooking.Admin.HttpApi.Host.csproj" -c Release -o ./module-admin/HttpApi.Host/published
-                        dotnet publish /nr:false "./module-danh-muc/HttpApi.Host/MandalaBooking.DanhMuc.HttpApi.Host.csproj" -c Release -o ./module-danh-muc/HttpApi.Host/published
-                        dotnet publish /nr:false "./module-import-export/HttpApi.Host/MandalaBooking.ImportExport.HttpApi.Host.csproj" -c Release -o ./module-import-export/HttpApi.Host/published
+				        dotnet restore "./MandalaHotelBackOffice.sln"
+                        dotnet publish /nr:false "./module-admin/HttpApi.Host/MandalaHotelBackOffice.Admin.HttpApi.Host.csproj" -c Release -o ./module-admin/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-danh-muc/HttpApi.Host/MandalaHotelBackOffice.DanhMuc.HttpApi.Host.csproj" -c Release -o ./module-danh-muc/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-import-export/HttpApi.Host/MandalaHotelBackOffice.ImportExport.HttpApi.Host.csproj" -c Release -o ./module-import-export/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-customer/HttpApi.Host/MandalaHotelBackOffice.Customer.HttpApi.Host.csproj" -c Release -o ./module-customer/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-contract/HttpApi.Host/MandalaHotelBackOffice.Contract.HttpApi.Host.csproj" -c Release -o ./module-contract/HttpApi.Host/published
+                        dotnet publish /nr:false "./module-booking/HttpApi.Host/MandalaHotelBackOffice.Booking.HttpApi.Host.csproj" -c Release -o ./module-booking/HttpApi.Host/published
                         
                         cp -R ./module-admin/OrdFull.HttpApi.Host/Resources ./module-admin/HttpApi.Host/published
                         
-                        docker rmi reg.mandalaholiday.tk/holiday-booking/admin -f
-                        docker rmi reg.mandalaholiday.tk/holiday-booking/danhmuc -f
-                        docker rmi reg.mandalaholiday.tk/holiday-booking/im-export -f
+                        docker rmi reg.mandalaholiday.tk/holiday-backoffice/admin -f
+                        docker rmi reg.mandalaholiday.tk/holiday-backoffice/danhmuc -f
+                        docker rmi reg.mandalaholiday.tk/holiday-backoffice/im-export -f
+                        docker rmi reg.mandalaholiday.tk/holiday-backoffice/customer -f
+                        docker rmi reg.mandalaholiday.tk/holiday-backoffice/contract -f
+                        docker rmi reg.mandalaholiday.tk/holiday-backoffice/booking -f
 				        '''
-				        admin = docker.build('reg.mandalaholiday.tk/holiday-booking/admin', './module-admin/HttpApi.Host')
-						docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
-						    admin.push()
-						}
-						
-						danhmuc = docker.build('reg.mandalaholiday.tk/holiday-booking/danhmuc', './module-danh-muc/HttpApi.Host')
-						docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
-						    danhmuc.push()
-                        }
-                        
-                        import_export = docker.build('reg.mandalaholiday.tk/holiday-booking/im-export', './module-import-export/HttpApi.Host')
-						docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
-						    import_export.push()
-                        }
+				        admin = docker.build('reg.mandalaholiday.tk/holiday-backoffice/admin', './module-admin/HttpApi.Host')
+						danhmuc = docker.build('reg.mandalaholiday.tk/holiday-backoffice/danhmuc', './module-danh-muc/HttpApi.Host')
+                        import_export = docker.build('reg.mandalaholiday.tk/holiday-backoffice/im-export', './module-import-export/HttpApi.Host')
+                        customer = docker.build('reg.mandalaholiday.tk/holiday-backoffice/customer', './module-customer/HttpApi.Host')
+                        contract = docker.build('reg.mandalaholiday.tk/holiday-backoffice/contract', './module-contract/HttpApi.Host')
+                        booking = docker.build('reg.mandalaholiday.tk/holiday-backoffice/booking', './module-booking/HttpApi.Host')
                     }
-                   
                 }
 		    }
-		  //  stage('Clear Folder'){
-		  //      steps 
-    // 			{
-    //                  script{
-    //         		        sh '''
-    //         		        chmod -R 777 ./module-admin/HttpApi.Host/published
-    //         		        chmod -R 777 ./module-danh-muc/HttpApi.Host/published
-    //         		        chmod -R 777 ./module-import-export/HttpApi.Host/published
-    //         		        rm -f -R ./module-admin/HttpApi.Host/published
-    //         		        rm -f -R ./module-danh-muc/HttpApi.Host/published
-    //         		        rm -f -R ./module-import-export/HttpApi.Host/published
-    //         		        '''
-    //                  }
-    // 			}
-		  //  }
-		}
-	}
+        stage('Push Docker Image') {
+          steps {
+            script {
+              docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                admin.push("latest")
+              }
+              docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                danhmuc.push("latest")
+              }
+              docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                import_export.push("latest")
+              }
+              docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                customer.push("latest")
+              }
+              docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                contract.push("latest")
+              }
+              docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                booking.push("latest")
+              }
+            }
+          }
+        }
+        stage('Preparing deploy to k8s') {
+          steps {
+            // input 'Deploy to Production?'
+            // milestone(1)
+            sshagent(credentials: ['jenkins_k8s']) {
+              sh '''
+              ssh -o StrictHostKeyChecking=no -l root 172.255.255.196 "export KUBECONFIG=/etc/kubernetes/admin.conf && kubectl delete -f /home/admins/backoffice-k8s/mandala-hotel-admin-deployment.yaml && kubectl delete -f /home/admins/backoffice-k8s/mandala-hotel-booking-deployment.yaml && kubectl delete -f /home/admins/backoffice-k8s/mandala-hotel-contract-deployment.yaml && kubectl delete -f /home/admins/backoffice-k8s/mandala-hotel-customer-deployment.yaml && kubectl delete -f /home/admins/backoffice-k8s/mandala-hotel-danh-muc-deployment.yaml && kubectl delete -f /home/admins/backoffice-k8s/mandala-hotel-im-export-deployment.yaml"
+              '''
+            }
+          }
+        }
+        stage('Deploy to k8s') {
+          steps {
+            // input 'Deploy to Production?'
+            milestone(1)
+            sshagent(credentials: ['jenkins_k8s']) {
+              sh '''
+              ssh -o StrictHostKeyChecking=no -l root 172.255.255.196 "export KUBECONFIG=/etc/kubernetes/admin.conf && kubectl apply -f /home/admins/backoffice-k8s/mandala-hotel-admin-deployment.yaml && kubectl apply -f /home/admins/backoffice-k8s/mandala-hotel-booking-deployment.yaml && kubectl apply -f /home/admins/backoffice-k8s/mandala-hotel-contract-deployment.yaml && kubectl apply -f /home/admins/backoffice-k8s/mandala-hotel-customer-deployment.yaml && kubectl apply -f /home/admins/backoffice-k8s/mandala-hotel-danh-muc-deployment.yaml && kubectl apply -f /home/admins/backoffice-k8s/mandala-hotel-im-export-deployment.yaml"
+              '''
+            }
+          }
+        }
+      }
+    }
  ```
  Jenkinsfile với Angular
  ```
  //  Gitlab
-	def gitRepository = 'https://gitlab.com/HuyNV1996/holiday-booking-angular.git'
+	def gitRepository = 'https://gitlab.com/HuyNV1996/holiday-backoffice-angular.git'
 	def gitBranch = 'main'
-	def gitlabCredential = 'holiday-booking-angular'
+	def gitlabCredential = 'holiday-backoffice-angular'
 
     // Harbor
-	def imageGroup = 'holiday-booking'
+	def imageGroup = 'holiday-backoffice'
 	def appName = "angular"
-	def namespace = "booking-angular"	
+	def namespace = "backoffice-angular"	
 	def registryCredential = 'jenkin_harbor'
 	def VERSION  = "prod-0.${BUILD_NUMBER}"
 	
@@ -239,7 +267,7 @@ Lấy file config k8s
 				    sh "git reset --hard"				
 			  }
 			}
-			stage("Build and Push Images"){
+			stage("Build Docker Image"){
     		    steps {
     		        script{
 				        sh '''#!/bin/bash
@@ -247,24 +275,40 @@ Lấy file config k8s
         		        yarn
         		        yarn run build:prod
         		        node --max_old_space_size=12000 ./node_modules/@angular/cli/bin/ng build --configuration production
-        		        docker rmi reg.mandalaholiday.tk/holiday-booking/angular -f
+        		        docker rmi reg.mandalaholiday.tk/holiday-backoffice/angular -f
         		        '''
-        		        angular = docker.build('reg.mandalaholiday.tk/holiday-booking/angular', './ClientApp')
-    					docker.withRegistry( DOCKER_REGISTRY, registryCredential ) {                       
-    						    angular.push()
-    					}
+        		        app = docker.build('reg.mandalaholiday.tk/holiday-backoffice/angular', './ClientApp')
+                        app.inside {
+                            sh 'echo Hello, World!'
+                        }
         		    }
     		    }
 		    }
-		    stage('Deploy to K8s')
-            {
-               steps{
-                    script{
-                        
-                        kubernetesDeploy (configs: './home/admins/booking-k8s/mandala-hotel-angular-deployment.yaml',kubeconfigId: 'jenkins_k8s_uat')
+		    stage('Push Docker Image') {
+                steps {
+                    script {
+                        docker.withRegistry(DOCKER_REGISTRY, registryCredential) {
+                            // app.push("${env.BUILD_NUMBER}")
+                            app.push("latest")
+                            }
+                        }
+                    }
+                }
+		    stage('Deploy to k8s') {
+                steps {
+                    // input 'Deploy to Production?'
+                    // milestone(1)
+                    sshagent(credentials: ['jenkins_k8s']) {
+                      sh '''
+                        ssh -o StrictHostKeyChecking=no -l root 172.255.255.196 "export KUBECONFIG=/etc/kubernetes/admin.conf && kubectl delete -f  /home/admins/backoffice-k8s/mandala-hotel-angular-deployment.yaml && kubectl apply -f  /home/admins/backoffice-k8s/mandala-hotel-angular-deployment.yaml"
+                      '''
                     }
                 }
             }
 		}
 	}
+ ```
+ Tạo ssh private key
+```
+ssh-keygen -t rsa -m PEM
  ```

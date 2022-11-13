@@ -20,7 +20,7 @@ CREATE USER 'mariadb_uat'@'%' IDENTIFIED BY 'Apec@123';
 ```
 Cấp quyền
 ```
-GRANT REPLICATION SLAVE ON *.* TO 'mariadb_uat'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'mariadb_uat'@'%'IDENTIFIED BY 'Apec@123';
 ```
 Refresh
 ```
@@ -31,3 +31,6 @@ Kiểm tra
 SELECT host, user, password FROM mysql.user;
 ```
 Kết nối với tools
+
+Chú ý thêm:
+lower_case_table_names=1 vào 50-server.cnf với dự án Holiday

@@ -1,11 +1,9 @@
-# Linux
-```
-
-```
+# Một số lệnh cơ bản thường fungf
+Hiển thị thư mục hiện tại
 ```
 pwd
 ```
-Hiển thị thư mục hiện tại
+Update
 ```
 sudo apt update
 ```
@@ -15,18 +13,20 @@ Trong ubuntu có file /etc/apt/source.list : chứa thông tin các version pack
 sudo apt upgrade
 ```
 Lấy thông tin nhưng phần mềm cần update từ file /etc/apt/source.list sau đó kéo về và cài đặt phiên bản mới nhất
+
+Tạo file trong thư mục hiện tại
 ```
 mkdir
 ```
-Tạo file trong thư mục hiện tại
+Di chuyển đến thư mục ...
 ```
 cd
 ```
-Di chuyển đến thư mục ...
+Xóa màn hình
 ```
 clear
 ```
-Xóa màn hình
+
 ```linux
 ls
 ```
@@ -66,3 +66,69 @@ sudo rm -rf /var/lib/apt/lists/*
 sudo rm -rf /etc/apt/sources.list.d/*
 sudo apt-get update
 ```
+# Đổi timezone
+```
+timedatectl
+sudo timedatectl set-timezone Asia/Bangkok
+```
+# Remote vào máy khác thông qua user/password
+```
+ssh root@172.255.255.196
+```
+# Đăng nhập linux thông qua ssh key
+- private key: Dùng cho client muốn login vào server
+- public key: Lưu tại server theo mục cài đặt, khi login client sẽ gửi private key, server có nhiệm vụ so sánh cặp valide private và public key để cho phép login hay hay không.
+### Tạo cặp ssh key
+```
+ssh-keygen -t rsa
+```
+Nếu trong root chưa có thư mục .ssh ta tạo dùng lệnh
+```
+mkdir /root/.ssh
+```
+Sau đó copy public key vào thư mục cài đặt
+```
+cp id_rsa.pub /root/.ssh/authorized_keys
+```
+Thay đổi mod cho các thưc mục chứa public key
+/root                               700
+/root/.ssh                          700
+/root/.ssh/authorized_keys          600
+```
+chmod 600 /root/.ssh/authorized_keys 
+chmod 700 /root/.ssh
+chmod 700 /root
+```
+Nếu tài khoản khác root ví dụ là abc
+/home/abc                               700
+/home/abc/.ssh                          700
+/home/abc/.ssh/authorized_keys          600
+```
+chmod 600 /home/abc/.ssh/authorized_keys 
+chmod 700 /home/abc/.ssh 
+chmod 700 /home/abc
+```
+
+### Cho phép ssh qua tài khoản root
+```
+cd /etc/ssh/sshd_config
+```
+Sửa
+FROM:
+```
+#PermitRootLogin prohibit-password
+TO:
+PermitRootLogin yes
+```
+```
+sudo systemctl restart ssh
+```
+Đổi password root do mặc định linux không cho phép ssh qua root
+sudo passwd
+
+### Thiết lập đường dẫn ssh public key
+AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+File lưu public key: .ssh/authorized_keys
+- Nếu tài khoản root thì đường dẫn là /root/.ssh/authorized_keys
+Nếu tài khoản admin thì đường dẫn lư là
+/home/admin/.ssh/authorized_keys
