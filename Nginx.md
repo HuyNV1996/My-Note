@@ -249,6 +249,67 @@ server {
     }
 }
 ```
+Một domain trỏ đến 2 host khác nhau dựa vào Url
+```nginx
+upstream mandala-booking {
+       ip_hash;
+       server 172.255.255.196:30080;
+}
+
+server {
+        server_name uat.mandalaholiday.com;
+        location / {
+                proxy_pass              http://mandala-booking;
+                proxy_set_header        Host            $host;
+                proxy_set_header        X-Real-IP       $remote_addr;
+                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header        Upgrade $http_upgrade;
+                proxy_set_header        Connection keep-alive;
+                proxy_set_header        X-Forward-Proto $scheme;
+                proxy_set_header        X-Nginx-Proxy true;
+                proxy_cache_bypass      $http_upgrade;
+                proxy_http_version      1.1;
+                #proxy_redirect         off;
+        }
+	location ^~ /evoucher/ {
+		proxy_pass		http://172.255.255.72:3344;
+		proxy_set_header        Host            $host;
+                proxy_set_header        X-Real-IP       $remote_addr;
+                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header        Upgrade $http_upgrade;
+                proxy_set_header        Connection keep-alive;
+                proxy_set_header        X-Forward-Proto $scheme;
+                proxy_set_header        X-Nginx-Proxy true;
+                proxy_cache_bypass      $http_upgrade;
+                proxy_http_version      1.1;
+	}
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/uat.mandalaholiday.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/uat.mandalaholiday.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+        server_name  mandala-admin-uat.mandalaholiday.com;
+        location / {
+                proxy_pass              http://mandala-booking;
+                proxy_set_header        Host            $host;
+                proxy_set_header        X-Real-IP       $remote_addr;
+                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header        Upgrade $http_upgrade;
+                proxy_set_header        Connection keep-alive;
+                proxy_set_header        X-Forward-Proto $scheme;
+                proxy_set_header        X-Nginx-Proxy true;
+                proxy_cache_bypass      $http_upgrade;
+                proxy_http_version      1.1;
+                #proxy_redirect         off;
+        }
+
+}
+
+```
 Với dự án dùng `PHP` tham khảo
 ```nginx
 server {
