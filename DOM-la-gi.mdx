@@ -1,0 +1,24 @@
+---
+title: 'DOM là gì'
+date: '2021-08-12'
+tags: ['javascript', 'html']
+draft: false
+summary: 'DOM là gì'
+authors: ['default']
+---
+
+import Twemoji from './Twemoji.tsx'
+import UnsplashPhotoInfo from './UnsplashPhotoInfo.tsx'
+
+![thumbnail-image](/static/images/git-notes.jpg)
+<UnsplashPhotoInfo photoURL="https://unsplash.com/photos/842ofHC6MaI" author="Yancy Min" />
+#### Khái niệm
+Hãy tưởng tượng, nếu bạn đang xem TV kênh A bạn muốn tăng giảm âm lượng hoặc chuyển sang kênh B. Để làm được những hành động này ta cần một chiếc Remote. Như vậy Remote là thành phần trung gian giúp người dùng giao tiếp với TV.
+Tương tự như vậy, để JavaScript giao tiếp với html, giúp website động hơn các lập trình viên sẽ cần DOM API để thay đổi các thành phần html của họ.
+[Tham khảo liveview DOM](https://software.hixie.ch/utilities/js/live-dom-viewer/)
+
+Trong React, "DOM ảo" (virtual DOM) là một cấu trúc dữ liệu nội bộ của React mô tả cấu trúc DOM thực tế của ứng dụng của bạn. Nó giúp React xác định cách tối ưu nhất để cập nhật DOM thực tế, đồng thời giảm thiểu việc truy cập trực tiếp vào DOM - một thao tác rất chậm và tốn tài nguyên.
+
+Khi một thành phần React được cập nhật, React sẽ tạo ra một cây DOM ảo mới, so sánh nó với cây DOM ảo cũ và tìm ra sự khác biệt giữa hai cây. Sau đó, React chỉ cập nhật các phần của DOM thực tế mà cần thiết để phản ánh các thay đổi. Quá trình này giúp tối ưu hóa hiệu suất ứng dụng của bạn, giảm thiểu việc render lại không cần thiết và làm cho trải nghiệm người dùng trơn tru hơn.
+
+Ví dụ, nếu bạn có một danh sách các mục, mỗi mục được đại diện bởi một thành phần con, khi một mục được thêm hoặc xóa, React sẽ tạo ra một cây DOM ảo mới, so sánh nó với cây DOM ảo cũ và chỉ cập nhật phần của DOM thực tế tương ứng với mục mới được thêm hoặc xóa. Việc này giúp tối ưu hóa hiệu suất ứng dụng của bạn và tránh việc render lại các thành phần không cần thiết.

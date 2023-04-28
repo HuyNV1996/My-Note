@@ -1,0 +1,56 @@
+---
+title: ""So sánh npm và yarn"
+date: '2023-03-20'
+draft: false
+summary: 'Key notes to save plenty of time while working with git for command-line-Yarn và npm là mã nguồn mở, giúp chúng ta quản lý các thư viện code mà dự án sử dụng.'
+# images: ['/static/images/git-notes.jpg']
+authors: ['default']
+tags: ['npm', 'yarn', 'package-manager']
+---
+import Twemoji from './Twemoji.tsx'
+import UnsplashPhotoInfo from './UnsplashPhotoInfo.tsx'
+
+![thumbnail-image](/static/images/git-notes.jpg)
+<UnsplashPhotoInfo photoURL="https://unsplash.com/photos/842ofHC6MaI" author="Yancy Min" />
+
+### Giới thiệu
+Yarn và npm là mã nguồn mở, giúp chúng ta quản lý các thư viện code mà dự án sử dụng. 
+#### Tại sao cần phải sử dụng npm hay yarn trong khi chúng ta có thể import các thư viện thủ công bằng tay??
+Hãy tưởng tượng với những dự án sử dụng tới chục, trăm dependencies, mỗi dependency lại chứa các dependency con khác => dependency hell => .... Nếu không có 1 tool để quản lý các thư viện chúng ta dùng trong dự án thì mất rất nhiều thời gian. Để sử dụng được cần phải tải các scripts về, include các thư viện vào dự án, công việc lặp lại liên tục như viện thật là nhàm chán và mất nhiều thời gian. Chính vì lý do đó npm đã ra đời giúp việc sử dụng các thư viện dễ dàng hơn. Các lập trình viên trên thế sẽ chia sẻ các thư viện thông quan npm, người dùng chỉ cần kéo thư viện từ npm về thông qua command,khai baso cacs dependency vào package.json và npm install. Ngoài ra việc installing, upgrading, configuring, và removing các thư viện khỏi project cũng rất dễ ràng thông qua các dòng lệnh. yarn ra đời sau npm để khắc phục một số nhược điểm của npm trước kia. 
+#### Yarn
+##### Yarn là gì?
+**Yarn** là **công cụ quản lý gói phần mềm (Package) JavaScript** mã nguồn mở tốc độ cao, nó cho phép người dùng sử dụng và chia sẻ các gói phần mềm với lập trình viên trên toàn thế giới. 
+##### Một số tính năng của **yarn**
+* **Offline mode**: Sau khi tải Yarn về máy, bạn có thể sử dụng công cụ mà không cần internet, giúp quá trình làm việc thuận lợi hơn rất nhiều.
+* **Deterministic**: Các Package có thứ tự cài đặt khác nhau sẽ được quản lý nhất quán cho tất cả các máy.
+* **Network Performance**: Giúp bạn sử dụng hiệu quả các request và tránh waterfall các request nhằm tối ưu tốc độ mạng.
+* **Multiple Registries**: Tính năng này giúp người dùng cài đặt các gói registries như Bower hay NPM đều đảm bảo workflow giống nhau.
+* **Network Resilience**: Với tính năng này, tiến trình làm việc của Yarn vẫn sẽ tiếp tục kể cả khi một request gặp lỗi. Tính năng này khắc phục được hạn chế của npm là nếu gặp lỗi thì npm của bạn sẽ phải dừng lại.
+* **Flat Mode**: Thống nhất phiên bản các Package thành 1 gói để hạn chế tình trạng trùng lặp cho người sử dụng.
+
+#### npm
+##### npm là gì?
+**npm (Node Package Manger)** là viết tắt của Node package manager là một công cụ tạo và quản lý các thư viện lập trình Javascript cho Node.js.
+* Trong cộng đồng JS, các lập trình viên chia sẻ hàng trăm nghìn các thư viện với các đoạn code đã thực hiện sẵn một chức năng nào đó. Nó giúp cho các dự án mới tránh phải viết lại các thành phần cơ bản, các thư viện lập trình hay thậm trí cả các framework.
+* Nếu trong project bạn sử dụng cả chực thư viện scripts từ các thư viện khác nhau. Điều đó tương đương với việc bạn phải tải source của tất các các thư viện đó và include vào trong source. Một công việc rất tốn thời gian
+
+#### So sánh npm và yarn
+* yarn có thể cài đặt các package song song thay vì chờ package trước cài xong mới tới package sau như npm nên tốc độ của nó nhanh đáng kể
+* Nhược điểm của Yarn so với NPM là Yarn lại sử dụng Facebook’s npm registry mirror nên khi làm việc với file lock thì sẽ gửi thông tin sử dụng package về với Facebook điều này đôi khi làm khó chịu đối với những dự án đảm bảo tính riêng tư. Ngoài ra yarn không hỗ trợ các phiên bản node.js cũ < 5 versions.
+* yarn có thể cài đặt các package offline, npm bắt buộc phải có internet mới cài được.
+#### package.json và package-lock.json
+##### Một số kiến thức bổ sung
+* Quy ước đánh versions: Mỗi modules sẽ đánh version theo quy ước **MAJOR.MINOR.PATCH**. Trong đó:**MAJOR** : Thay đổi (hay còn gọi là breaking changes) khi những API cũ không còn tương thích nữa . VD : gọi là 2.0.0 khi các api từ bản 1.0.0 không còn dùng được nữa.**MINOR**: Thay đổi khi thêm những tính năng mới tuy nhiên những API từ phiên phản trước đó vẫn có thể dùng trong phiên bản này. VD: Phiên bản 1.1.0 thêm một số tính năng tuy nhiên những API từ phiên bản 1.0.0 vẫn được giữ nguyên.**PATCH**: Phiên bản thay đổi khi có những fix bug cho những phiên bản trước đó và API hoàn toàn vẫn tương thích với các phiên bản cũ.
+
+##### Đặt vấn đề.
+Thường các mã nguồn chia sẻ trên các nền tảng github thường chúng ta sẽ thấy có file package.json chứa những dependencies cần thiết để run 1 project. Lý thuyết là vậy nhưng trong thực tế có những trường hợp ngoại lệ. Ví dụ project của bạn file package.json chứa
+```bash
+"redux-thunk": "^2.3.0"
+```
+Như giải thích ở trên, với tiền tố ^ , npm sẽ tự động install phiên bản mới nhất miễn là nó cùng MAJOR version. Một kịch bản có thể xảy ra ở đây là : Owner của dự án đặt version của gói redux-thunk như trên, tuy nhiên khi bạn clone về và chạy npm install thì gói redux-thunk mới được cập nhật một bản vá và hiện tại đang ở 2.3.1 . Tất nhiên là ở phiên bản clone của bạn npm sẽ tự động tải xuống phiên bản mới nhất. Và biết sao được, chẳng may với bản và này lại gây xung đột với những chức năng đang sử dụng, và khi đó kết quả chạy của 2 phiên bản 2.3.1 và 2.3.0 sẽ khác nhau
+##### package-lock
+Mục đích của package-lock.json chính là việc ngăn chặn những tính huống được mô tả phía trên : Cài đặt các dependencies từ cùng một file package.json nhưng lại dẫn đến 2 phiên bản cài đặt khác nhau.
+* package-lock.json sẽ tự động được tạo khi bạn sử dụng npm từ bản ^5.x.x
+* Nên COMMIT package-lock.json vào hệ thống quản lý code mà bạn sử dụng (Git, SVN,…)
+* package.json chỉ chứa thông tin các dependency cần thiết cho project của chúng ta. Nhưng thực tế các dependency này phụ thuộc các dependency khác, nếu như các nested dependency thay đổi version thì package.json không thể control được. Vì vậy package-lock.json sinh ra để chứa toàn bộ version các nested dependency theo cây thư mục. Điều này giúp việc quản lý các version tốt hơn, giảm thiểu những xung đột khi các dependency thay đổi version. 
+* Mỗi này chạy **npm install** hệ thống sẽ cài đặt theo các version trong file package.json và file package-lock.json sẽ bị thay đổi. Vì vậy khi deploy lên server chúng ta nên sử dụng **npm ci** để cài đặt chính xác version các dependency được lưu vết trong file package-lock.json.

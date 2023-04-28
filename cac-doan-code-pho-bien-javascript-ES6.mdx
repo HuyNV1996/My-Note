@@ -1,0 +1,356 @@
+---
+title: ""Các đoạn code phổ biến trong javascript"
+date: '2023-03-20'
+draft: false
+summary: 'Javascript là ngôn ngữ hầu như lập trình viên nào cũng cần phải biết. Đặc biệt, với phiên bản ES6, Javascript có những cải tiến tốt hơn.'
+# images: ['/static/images/git-notes.jpg']
+authors: ['default']
+tags: ['javascript', 'js']
+---
+import UnsplashPhotoInfo from './UnsplashPhotoInfo.tsx'
+
+![thumbnail-image](/static/images/git-notes.jpg)
+<UnsplashPhotoInfo photoURL="https://unsplash.com/photos/842ofHC6MaI" author="Yancy Min" />
+#### Giới thiệu
+Javascript là ngôn ngữ hầu như lập trình viên nào cũng cần phải biết. Đặc biệt, với phiên bản ES6, Javascript có những cải tiến tốt hơn.
+####  1.Làm thế nào để ẩn tất cả các phần tử nào đó với Javascript?
+
+```js
+const hide = (...el) => [...el].forEach(e => (e.style.display = 'none'));
+
+// Ví dụ
+// Ẩn tất cả các phần tử <img> trên trang
+hide(document.querySelectorAll('img'));
+```
+#### 2. Kiểm tra xem phần tử có chứa class nào đó hay không?
+
+```js
+const hasClass = (el, className) => el.classList.contains(className);
+
+// Ví dụ
+hasClass(document.querySelector('p.special'), 'special'); // true
+```
+
+#### 3. Toggle Class
+
+```js
+const toggleClass = (el, className) => el.classList.toggle(className);
+
+// Ví dụ
+toggleClass(document.querySelector('p.special'), 'special'); 
+// Thẻ p sẽ không còn class "special" nữa
+```
+#### 4. Làm thế nào để lấy được vị trí cuộn trang hiện tại?
+```js
+const getScrollPosition = (el = window) => ({
+  x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
+  y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop
+});
+
+// Ví dụ
+getScrollPosition(); // {x: 0, y: 200}
+```
+#### 5.Làm thế nào để cuộn mượt mà lên đầu trang?
+
+```js
+const scrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop;
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop);
+    window.scrollTo(0, c - c / 8);
+  }
+};
+
+// Ví dụ
+scrollToTop();
+```
+#### 6. Làm thế nào để kiểm tra xem phần tử cha có chứa phần tử con không?
+
+```js
+const elementContains = (parent, child) => parent !== child && parent.contains(child);
+
+// Ví dụ
+elementContains(document.querySelector('head'), document.querySelector('title')); 
+// true
+elementContains(document.querySelector('body'), document.querySelector('body'));
+// false
+```
+
+#### 7. Làm thế nào để kiểm tra xem phần tử được chỉ định có hiển thị trong chế độ xem không?
+
+```js
+const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
+  const { top, left, bottom, right } = el.getBoundingClientRect();
+  const { innerHeight, innerWidth } = window;
+  return partiallyVisible
+    ? ((top > 0 && top < innerHeight) || (bottom > 0 && bottom < innerHeight)) &&
+        ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+    : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
+};
+
+// Examples
+elementIsVisibleInViewport(el); // (Không hiển thị đầy đủ)
+elementIsVisibleInViewport(el, true); // (Hiển thị một phần)
+```
+
+#### 8. Làm thế nào để tìm nạp tất cả các hình ảnh trong một phần tử?
+
+```js
+const getImages = (el, includeDuplicates = false) => {
+  const images = [...el.getElementsByTagName('img')].map(img => img.getAttribute('src'));
+  return includeDuplicates ? images : [...new Set(images)];
+};
+
+// Ví dụ
+getImages(document, true); // ['image1.jpg', 'image2.png', 'image1.png', '...']
+getImages(document, false); // ['image1.jpg', 'image2.png', '...']
+```
+
+#### 9. Làm thế nào để biết được thiết bị là thiết bị di động hay máy tính để bàn / máy tính xách tay?
+
+```js
+const detectDeviceType = () =>
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ? 'Mobile'
+    : 'Desktop';
+
+// Ví dụ
+detectDeviceType(); // "Mobile" hoặc "Desktop"
+
+```
+#### 10. Làm thế nào để có được URL hiện tại?
+
+```
+const currentURL = () => window.location.href;
+
+// Ví dụ
+currentURL(); // 'https://niithanoi.edu.com'
+```
+
+#### 11. Làm thế nào để tạo một đối tượng chứa các tham số của URL hiện tại?
+
+```js
+const getURLParameters = url =>
+  (url.match(/([^?=&]+)(=([^&]*))/g) || []).reduce(
+    (a, v) => ((a[v.slice(0, v.indexOf('='))] = v.slice(v.indexOf('=') + 1)), a),
+    {}
+  );
+
+// Ví dụ
+getURLParameters('http://niithanoi.edu.vn/page?n=NIIT&s=Hanoi'); // {n: 'NIIT', s: 'Hanoi'}
+getURLParameters('niithanoi.edu.vn'); // {}
+```
+
+#### 12. Làm thế nào để mã hóa một tập hợp các phần tử form dưới dạng một đối tượng?
+
+```js
+const formToObject = form =>
+  Array.from(new FormData(form)).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]: value
+    }),
+    {}
+  );
+
+// Ví dụ
+formToObject(document.querySelector('#form'));
+// { email: 'hello@niithanoi.edu.vn', name: 'NIIT ICT Hanoi' }
+```
+
+#### 13. Làm thế nào để lấy một tập các thuộc tính được chỉ định bởi các bộ chọn đã cho từ một đối tượng?
+
+```js
+const get = (from, ...selectors) =>
+  [...selectors].map(s =>
+    s
+      .replace(/\[([^\[\]]*)\]/g, '.$1.')
+      .split('.')
+      .filter(t => t !== '')
+      .reduce((prev, cur) => prev && prev[cur], from)
+  );
+const obj = { selector: { to: { val: 'NIIT' } }, target: [1, 2, { a: 'test' }] };
+
+// Ví dụ
+get(obj, 'selector.to.val', 'target[0]', 'target[2].a'); // ['NIIT', 1, 'test']
+
+```
+#### 14. Làm thế nào để gọi một hàm nào đó sau một khoảng thời gian (tính bằng mili giây)?
+
+```js
+const delay = (fn, wait, ...args) => setTimeout(fn, wait, ...args);
+delay(
+  function(text) {
+    console.log(text);
+  },
+  1000,
+  'later'
+); 
+
+// Logs 'later' sau 1 giây
+
+```
+#### 15. Làm thế nào để kích hoạt một sự kiện cụ thể trên một phần tử nhất định, tùy ý chuyển dữ liệu tùy chỉnh?
+
+```js
+const triggerEvent = (el, eventType, detail) =>
+  el.dispatchEvent(new CustomEvent(eventType, { detail }));
+
+// Ví dụ
+triggerEvent(document.getElementById('myId'), 'click');
+triggerEvent(document.getElementById('myId'), 'click', { username: 'NIIT' });
+
+```
+#### 16. Làm thế nào để loại bỏ một even listener từ một phần tử?
+
+```js
+const off = (el, evt, fn, opts = false) => el.removeEventListener(evt, fn, opts);
+
+const fn = () => console.log('!');
+document.body.addEventListener('click', fn);
+off(document.body, 'click', fn);
+// Không còn log '!' khi click vào trang
+```
+
+#### 17. Làm thế nào để có được định dạng có thể đọc được của số mili giây đã cho?
+
+```js
+const formatDuration = ms => {
+  if (ms < 0) ms = -ms;
+  const time = {
+    day: Math.floor(ms / 86400000),
+    hour: Math.floor(ms / 3600000) % 24,
+    minute: Math.floor(ms / 60000) % 60,
+    second: Math.floor(ms / 1000) % 60,
+    millisecond: Math.floor(ms) % 1000
+  };
+  return Object.entries(time)
+    .filter(val => val[1] !== 0)
+    .map(([key, val]) => `${val} ${key}${val !== 1 ? 's' : ''}`)
+    .join(', ');
+};
+
+// Ví dụ
+formatDuration(1001); // '1 second, 1 millisecond'
+formatDuration(34325055574); // '397 days, 6 hours, 44 minutes, 15 seconds, 574 milliseconds'
+
+```
+#### 18. Làm thế nào để tính số ngày giữa 2 ngày đã cho?
+
+```js
+const getDaysDiffBetweenDates = (dateInitial, dateFinal) =>
+  (dateFinal - dateInitial) / (1000 * 3600 * 24);
+
+// Ví dụ
+getDaysDiffBetweenDates(new Date('2020-01-01'), new Date('2020-01-22')); // 21
+
+```
+#### 19. Làm thế nào để thực hiện một yêu cầu GET đến URL nào đó?
+
+```js
+const httpGet = (url, callback, err = console.error) => {
+  const request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.onload = () => callback(request.responseText);
+  request.onerror = () => err(request);
+  request.send();
+};
+
+httpGet(
+  'https://niithanoi.edu.vn/post/1',
+  console.log
+); 
+
+// Logs: {"userId": 1, "id": 1, "title": "Bài 1", "body": "Nội dung bài 1"}
+```
+
+#### 20. Làm thế nào để thực hiện một yêu cầu POST đến URL nào đó?
+
+```js
+const httpPost = (url, data, callback, err = console.error) => {
+  const request = new XMLHttpRequest();
+  request.open('POST', url, true);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  request.onload = () => callback(request.responseText);
+  request.onerror = () => err(request);
+  request.send(data);
+};
+
+const newPost = {
+  userId: 1,
+  id: 1337,
+  title: 'Tên bài viết',
+  body: 'ABC'
+};
+const data = JSON.stringify(newPost);
+httpPost(
+  'https://niithanoi.edu.vn/posts',
+  data,
+  console.log
+); 
+
+// Logs: {"userId": 1, "id": 1337, "title": "Tên bài viết", "body": "ABC"}
+
+```
+#### 21. Làm thế nào để tạo một bộ đếm với phạm vi, bước đếm và thời lượng được chỉ định cho bộ chọn được chỉ định?
+
+```js
+const counter = (selector, start, end, step = 1, duration = 2000) => {
+  let current = start,
+    _step = (end - start) * step < 0 ? -step : step,
+    timer = setInterval(() => {
+      current += _step;
+      document.querySelector(selector).innerHTML = current;
+      if (current >= end) document.querySelector(selector).innerHTML = end;
+      if (current >= end) clearInterval(timer);
+    }, Math.abs(Math.floor(duration / (end - start))));
+  return timer;
+};
+
+// Ví dụ
+counter('#my-id', 1, 1000, 5, 2000); // Tạo bộ đếm thời gian 2 giây cho phần tử id="my-id"
+
+```
+#### 22. Làm thế nào để sao chép một chuỗi vào clipboard?
+
+```js
+const copyToClipboard = str => {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  const selected =
+    document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+  if (selected) {
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(selected);
+  }
+};
+
+// Ví dụ
+copyToClipboard('Chuỗi ví dụ'); // 'Chuỗi ví dụ' đã được copy vào clipboard.
+
+```
+#### 23. Làm thế nào để biết tab của trình duyệt của trang có đang được focus?
+
+```js
+const isBrowserTabFocused = () => !document.hidden;
+
+// Ví dụ
+isBrowserTabFocused(); // true
+```
+
+#### 24. Làm thế nào để tạo một thư mục nếu nó không tồn tại?
+
+```js
+const fs = require('fs');
+const createDirIfNotExists = dir => (!fs.existsSync(dir) ? fs.mkdirSync(dir) : undefined);
+
+// Ví dụ
+createDirIfNotExists('test'); // Tạo thư mục 'test', nếu nó không tồn tại
+```

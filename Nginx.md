@@ -272,8 +272,8 @@ server {
                 #proxy_redirect         off;
         }
 	location ^~ /evoucher/ {
-		proxy_pass		http://172.255.255.72:3344;
-		proxy_set_header        Host            $host;
+		        proxy_pass		http://172.255.255.72:3344;
+		        proxy_set_header        Host            $host;
                 proxy_set_header        X-Real-IP       $remote_addr;
                 proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
                 proxy_set_header        Upgrade $http_upgrade;
@@ -309,6 +309,49 @@ server {
 
 }
 
+Ví dụ cấu hình wordpress
+```nginx
+server {
+	## listen for ipv4; this line is default and implied
+        #listen   [::]:80 default_server ipv6only=on; ## listen for ipv6
+
+        root /var/www/mandalahotel.com.vn/public;
+        index index.php  index.html index.htm;
+
+        # Make site accessible from http://localhost/
+        server_name hotel.mandalaholiday.tk;
+	location / {
+		try_files $uri $uri/ /index.php$is_args$args;
+		root   /var/www/mandalahotel.com.vn/public;
+		index index.php index.html index.htm;
+       }
+
+	location ^~ /en/ {
+                try_files $uri $uri/ /index.php$is_args$args;
+                root   /var/www/mandalahotel.com.vn/public/en;
+                index index.php index.html index.htm;
+       }
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		#fastcgi_pass 127.0.0.1:9000;
+		fastcgi_pass unix:/run/php-fpm/php7.sock;
+		fastcgi_intercept_errors        on;
+        		error_page 404 /error/404.php;
+	}
+
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	location ~ /\.ht {
+		#deny all;
+	}
+	location ~ /.well-known {  
+             allow all;
+	}
+}
+```
+Chú ý: Kiểm tra version php-fpm tại /var/run/php-fpm => check file php7.sock hay php?.sock để điền vào nginx
+
 ```
 Với dự án dùng `PHP` tham khảo
 ```nginx
@@ -341,6 +384,75 @@ server {
     }
 }
 ```
+### Config trỏ đến domain đến subfolders
+Description
+Let’s say your website (e.g. mywebsite.com) is installed in the following directory on your server /var/www/mywebsite and you’d like to install a WordPress blog that can be accessed through the following URL mywebsite.com/blog.
+
+You’ll have to configure NGINX to redirect users requests to a particular directory depending on the requested domain subfolder which in your case is mywebsite.com/blog.
+
+There are two ways to do that.
+
+The Subfolder Isn’t Inside Your Main Folder
+The directory structure is the following.
+
+```
+/var/www/mywebsite
+/var/www/blog
+```
+Open your NGINX config file which should be located in /etc/nginx/sites-available/mywebsite and the following code (change it according to your needs).
+
+```
+location /blog {
+     alias /var/www/blog;
+     try_files $uri $uri/ @blog;
+ 
+     location ~ \.php$ {
+             include fastcgi_params;
+             fastcgi_param SCRIPT_FILENAME $request_filename;
+             fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
+     }
+}
+```
+```
+location @blog {
+     rewrite /blog/(.*)$ /blog/index.php?/$1 last;
+}
+```
+Check for errors and reload the NGING configurations.
+```
+nginx -t
+service nginx reload
+```
+The Subfolder Is Inside The Main Folder
+The directory structure is the following.
+```
+/var/www/mywebsite
+/var/www/mywebsite/blog
+```
+Open your NGINX config file and the following code (change it according to your needs).
+```
+  location /blog {
+      alias /var/www/mywebsite/blog;
+      try_files $uri $uri/ @blog;
+ 
+      location ~ \.php$ {
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $request_filename;
+          fastcgi_pass   unix:/run/php/php7.2-fpm.sock;
+      }
+}
+ 
+location @blog {
+      rewrite /blog/(.*)$ /blog/index.php?/$1 last;
+}
+```
+Check for errors and reload the NGING configurations.
+
+```
+nginx -t
+service nginx reload
+```
+
 ## Tự động gia hạn ssl
 Sử dụng CronbTab để chạy lệnh này cấp mới chứng chỉ. Ví dụ, cứ 2h sáng vào ngày 1 hàng tháng thì chạy, ta tạo crontab như sau:
 ```
