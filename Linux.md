@@ -132,3 +132,22 @@ File lưu public key: .ssh/authorized_keys
 - Nếu tài khoản root thì đường dẫn là /root/.ssh/authorized_keys
 Nếu tài khoản admin thì đường dẫn lư là
 /home/admin/.ssh/authorized_keys
+
+### Thêm tài khoản centos
+Tạo tài khoản <new_user> bằng lệnh adduser
+```
+adduser <new_user>
+```
+Tạo password <new_user> bằng lệnh passwd
+```
+passwd <new_user>
+```
+Thêm tài khoản <new_user> vào nhóm sudo cũng sử dụng lệnh adduser
+```
+usermod -aG wheel <new_user>
+```
+Kiểm tra lại tài khoản <new_user> xem đã sử dụng được quyền sudo chưa
+```
+su - <new_user>
+sudo ls -la
+```

@@ -123,3 +123,21 @@ sudo systemctl restart httpd
 ls -lZ /var/www/your_domain/log
 ```
 Testing!!!!!!!!
+
+# Gen SSL Apache
+```
+sudo yum install epel-release
+```
+```
+sudo yum install certbot python2-certbot-apache mod_ssl
+```
+```
+sudo certbot --apache -d example.com
+```
+hoặc
+```
+sudo certbot --apache -d example.com -d www.example.com
+```
+```
+sudo certbot --apache
+```
