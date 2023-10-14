@@ -111,8 +111,8 @@ Ví dụ file index.html:
 ```
 ## Install
 ```sh
-sudo nano /etc/nginx/sites-available/domain_one
-sudo nano /etc/nginx/sites-available/domain_two
+sudo nano /etc/nginx/sites-available/domain_one.conf
+sudo nano /etc/nginx/sites-available/domain_two.conf
 ```
 Tham khảo file domain_one.conf
 ```nginx
@@ -148,8 +148,8 @@ try_files $uri $uri/ =404;
 ```
 Copy từ sites-available sang sites-enabled. Chú ý do trong nginx.conf không include sites-available nên phải copy sang *.conf.d hoặc sites-enabled
 ```sh
-sudo ln -s /etc/nginx/sites-available/domain_one.com /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/domain_two.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/domain_one.com.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/domain_two.com.conf /etc/nginx/sites-enabled/
 ```
 Hoặc có thể tạo file .conf trực tiếp trong sites-enabled
 ```sh
