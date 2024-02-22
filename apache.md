@@ -105,6 +105,7 @@ Sửa
     ServerName www.your_domain
     ServerAlias your_domain
     DocumentRoot /var/www/your_domain/html
+    DirectoryIndex index.php index.html
     ErrorLog /var/www/your_domain/log/error.log
     CustomLog /var/www/your_domain/log/requests.log combined
 </VirtualHost>
