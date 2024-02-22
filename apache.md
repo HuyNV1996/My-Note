@@ -102,12 +102,16 @@ sudo vi /etc/httpd/sites-available/your_domain.conf
 Sửa
 ```
 <VirtualHost *:80>
-    ServerName www.your_domain
-    ServerAlias your_domain
-    DocumentRoot /var/www/your_domain/html
+    ServerName www.annamrailway.com.vn
+    ServerAlias annamrailway.com.vn
+    DocumentRoot /var/www/annamrailway.com.vn/public
     DirectoryIndex index.php index.html
-    ErrorLog /var/www/your_domain/log/error.log
-    CustomLog /var/www/your_domain/log/requests.log combined
+    ErrorLog /var/www/annamrailway.com.vn/log/error.log
+    CustomLog /var/www/annamrailway.com.vn/log/requests.log combined
+RewriteEngine on
+RewriteCond %{SERVER_NAME} =annamrailway.com.vn [OR]
+RewriteCond %{SERVER_NAME} =www.annamrailway.com.vn
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 ```
 ```
