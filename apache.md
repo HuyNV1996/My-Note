@@ -71,13 +71,13 @@ systemctl status httpd
 # Deploy website
 ### Tạo folder
 ```
-sudo mkdir -p /var/www/your_domain/html
+sudo mkdir -p /var/www/your_domain/public
 sudo mkdir -p /var/www/your_domain/log
-sudo chown -R $USER:$USER /var/www/your_domain/html
+sudo chown -R $USER:$USER /var/www/your_domain/public
 ```
 ### Phân quyền cho folder
 ```
-sudo chown -R $USER:$USER /var/www/your_domain/html
+sudo chown -R $USER:$USER /var/www/your_domain/public
 sudo chmod -R 755 /var/www
 ```
 ### Tạo file html
@@ -93,11 +93,11 @@ sudo chmod -R 755 /var/www
 ```
 ```
 sudo mkdir /etc/httpd/sites-available /etc/httpd/sites-enabled
-sudo vi /etc/httpd/conf/httpd.conf
+sudo no /etc/httpd/conf/httpd.conf
 ```
 Thêm IncludeOptional sites-enabled/*.conf vào file
 ```
-sudo vi /etc/httpd/sites-available/your_domain.conf
+sudo nano /etc/httpd/sites-available/your_domain.conf
 ```
 Sửa
 ```
