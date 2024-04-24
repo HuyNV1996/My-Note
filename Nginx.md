@@ -95,6 +95,8 @@ echo $USER
 sudo chmod -R 755 /var/www/domain_one.com
 sudo chmod -R 755 /var/www/domain_two.com
 
+sudo chmod -R 777 /var/www/domain_one.com/public/wp-content
+
 sudo nano /var/www/domain_one.com/html/index.html
 sudo nano /var/www/domain_two.com/html/index.html
 ```
