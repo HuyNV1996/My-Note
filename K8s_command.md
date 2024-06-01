@@ -8,7 +8,7 @@
   ```sh
   docker info
   ```
-  - **Container**
+- **Container**
   ```sh
   docker run -d -p 80:80 nginx
   ```
@@ -24,7 +24,7 @@
   ```sh
   docker rm [CONTAINER_ID]
   ```
-  - **Image**
+- **Image**
   ```sh
   docker images
   ```
