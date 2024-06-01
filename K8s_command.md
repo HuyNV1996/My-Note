@@ -33,15 +33,15 @@
   ```
   docker rmi [IMAGE_ID]
   ```
-  - **Logs**
+- **Logs**
   ```sh
   docker logs [CONTAINER_ID]
   ```
-  - **Truy cập bên trong container**
+- **Truy cập bên trong container**
   ```sh
   docker exec -it [CONTAINER_ID] /bin/bash
   ```
-   - **Buil từ docker file**
+- **Buil từ docker file**
   ```sh
   docker build -t [IMAGE_NAME] .
   ```
